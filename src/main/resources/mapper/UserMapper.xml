@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cap.dao.UserDao" >
+    <resultMap id="BaseResultMap" type="com.cap.entity.User" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="age" property="age" jdbcType="VARCHAR" />
+        <result column="gender" property="gender" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        openId, nickName, gender, language, city, province, phoneNumber,birthday
+    </sql>
+
+    <select id="getAll" resultType="com.cap.entity.User"  >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user
+    </select>
+
+    <select id="getUserInfo" parameterType="String" resultType="com.cap.entity.User" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user
+        WHERE openId = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.cap.entity.User" >
+        INSERT INTO
+        user
+        (openId,nickName,gender,phoneNumber)
+        VALUES
+        (#{openId},#{nickName}, #{gender}, #{phoneNumber})
+    </insert>
+
+    <update id="updateUserInfo" parameterType="com.cap.entity.User">
+        UPDATE
+        user
+        <set>
+            <if test="phoneNumber != null">phoneNumber = #{phoneNumber},</if>
+            <if test="birthday != null">birthday = #{birthday}</if>
+        </set>
+        <where>
+          openId = #{openId}
+        </where>
+    </update>
+
+    <!--<delete id="delete" parameterType="java.lang.Integer" >-->
+        <!--DELETE FROM-->
+        <!--user-->
+        <!--WHERE-->
+        <!--id =#{id}-->
+    <!--</delete>-->
+
+</mapper>
