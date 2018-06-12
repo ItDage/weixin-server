@@ -44,4 +44,14 @@ public class UserController {
         result.setCode(userService.updateUserInfo(user));
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping("/testAutoDeploy")
+    public Result testAutoDeploy(String openId){
+        System.out.println("测试");
+        Result result = new Result();
+        result.setCode(200);
+        result.setMsg("测试成功!");
+        return result;
+    }
 }
