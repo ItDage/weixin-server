@@ -34,7 +34,6 @@ public class LoginController {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         String requestUrl = url;
         requestUrl += ("&js_code=" + code);
-        System.out.println("请求的url" + requestUrl);
         HttpGet httpGet = new HttpGet(requestUrl);
         try {
             CloseableHttpResponse response = httpClient.execute(httpGet);
@@ -44,6 +43,8 @@ public class LoginController {
                 Gson gson = new Gson();
                 Map map = gson.fromJson(str, Map.class);
                 String openId = (String)map.get("openid");
+                String session_key = (String)map.get("session_key");
+                System.out.println("session_key" + session_key);
                 System.out.println(str);
                 System.out.println(openId);
                 result.setData(openId);
