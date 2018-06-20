@@ -2,9 +2,7 @@ package com.cap.controller;
 
 import com.cap.entity.Result;
 import com.cap.util.WXCore;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +21,7 @@ public class SportsController {
 
     @ResponseBody
     @RequestMapping(value = "/sports/getSteps", method = RequestMethod.POST)
-    public Result getSteps(@RequestBody String encryptedData, @RequestBody String iv, @RequestBody String openId){
+    public Result getSteps(@RequestBody String encryptedData,  String iv, String openId){
         System.out.println("encrypteData" + encryptedData + "iv" + iv + "openId" + openId);
         Result result = new Result();
         String session_key = LoginController.map.get(openId);
