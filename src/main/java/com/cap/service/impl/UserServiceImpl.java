@@ -30,7 +30,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateUserInfo(User user) {
-        System.out.println(user);
         User userInfo = getUserInfo(user.getOpenId());
         return  userInfo == null ? insert(user) : userDao.updateUserInfo(user);
     }

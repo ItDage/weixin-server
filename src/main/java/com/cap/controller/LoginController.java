@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.cap.entity.Result;
+import com.cap.entity.User;
+import com.cap.service.impl.UserServiceImpl;
 import com.google.gson.Gson;
 
 import org.apache.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,13 +29,14 @@ public class LoginController {
 
     @Value("${weixin.auth.url}")
     private String url;
+    @Autowired
+    private UserServiceImpl userServiceImpl;
 
     public static ConcurrentHashMap<String, String> map2 = new ConcurrentHashMap<String, String>();
 
     @ResponseBody
     @RequestMapping("/login")
     public Result testLogin(String code){
-        System.out.println("登录请求的code" + code);
         Result result = new Result();
         CloseableHttpClient httpClient = HttpClients.createDefault();
         String requestUrl = url;
@@ -47,11 +51,11 @@ public class LoginController {
                 Map map = gson.fromJson(str, Map.class);
                 String openId = (String)map.get("openid");
                 String session_key = (String)map.get("session_key");
-                map2.put(openId, session_key);
-                System.out.println("此时map2的大小" + map2.size());
+                User user = new User();
+                user.setOpenId(openId);
+                user.setSession_key(session_key);
+                userServiceImpl.updateUserInfo(user);
                 System.out.println("session_key" + session_key);
-                System.out.println(str);
-                System.out.println(openId);
                 result.setData(openId);
             }
         } catch (IOException e) {
