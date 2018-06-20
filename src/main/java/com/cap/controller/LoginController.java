@@ -27,7 +27,7 @@ public class LoginController {
     @Value("${weixin.auth.url}")
     private String url;
 
-    public static ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
+    public static ConcurrentHashMap<String, String> map2 = new ConcurrentHashMap<String, String>();
 
     @ResponseBody
     @RequestMapping("/login")
@@ -47,7 +47,7 @@ public class LoginController {
                 Map map = gson.fromJson(str, Map.class);
                 String openId = (String)map.get("openid");
                 String session_key = (String)map.get("session_key");
-                map.put(openId, session_key);
+                map2.put(openId, session_key);
                 System.out.println("session_key" + session_key);
                 System.out.println(str);
                 System.out.println(openId);
