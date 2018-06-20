@@ -20,8 +20,8 @@ public class SportsController {
     private String appId;
 
     @ResponseBody
-    @RequestMapping(value = "/sports/getSteps", method = RequestMethod.POST)
-    public Result getSteps(@RequestBody String encryptedData,  String iv, String openId){
+    @RequestMapping(value = "/sports/getSteps", method = RequestMethod.PUT)
+    public Result getSteps(String encryptedData,  String iv, String openId){
         System.out.println("encrypteData" + encryptedData + "iv" + iv + "openId" + openId);
         Result result = new Result();
         System.out.println("此时map2的大小222" + LoginController.map2.size() + LoginController.map2.get(openId));
