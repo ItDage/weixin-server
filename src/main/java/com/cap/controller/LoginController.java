@@ -48,6 +48,7 @@ public class LoginController {
                 String openId = (String)map.get("openid");
                 String session_key = (String)map.get("session_key");
                 map2.put(openId, session_key);
+                System.out.println("此时map2的大小" + map2.size());
                 System.out.println("session_key" + session_key);
                 System.out.println(str);
                 System.out.println(openId);

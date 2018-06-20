@@ -24,6 +24,7 @@ public class SportsController {
     public Result getSteps(@RequestBody String encryptedData,  String iv, String openId){
         System.out.println("encrypteData" + encryptedData + "iv" + iv + "openId" + openId);
         Result result = new Result();
+        System.out.println("此时map2的大小222" + LoginController.map2.size() + LoginController.map2.get(openId));
         String session_key = LoginController.map2.get(openId);
         System.out.println(WXCore.decrypt(appId, encryptedData, session_key, iv));
         result.setMsg("获取成功!");
