@@ -9,7 +9,7 @@
     </resultMap>
 
     <sql id="Base_Column_List" >
-        openId, nickName, gender, language, city, province, phoneNumber,birthday
+        openId, nickName, gender, language, city, province, phoneNumber,birthday,session_key
     </sql>
 
     <select id="getAll" resultType="com.cap.entity.User"  >
@@ -38,7 +38,8 @@
         user
         <set>
             <if test="phoneNumber != null">phoneNumber = #{phoneNumber},</if>
-            <if test="birthday != null">birthday = #{birthday}</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="session_key != null">session_key = #{session_key}</if>
         </set>
         <where>
           openId = #{openId}
