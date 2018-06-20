@@ -3,9 +3,12 @@ package com.cap.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Created by cmhy on 2018/6/20.
  */
+@Component
 public class DateUtil {
 
     public Date timeStampToDate(long timeStamp){

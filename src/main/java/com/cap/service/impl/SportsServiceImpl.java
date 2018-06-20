@@ -2,13 +2,16 @@ package com.cap.service.impl;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import com.cap.entity.Sport;
 import com.cap.entity.StepInfo;
+import com.cap.util.DateUtil;
 import com.cap.util.WXCore;
 import com.google.gson.Gson;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +19,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SportsServiceImpl {
+
+    @Autowired
+    private DateUtil dateUtil;
 
     public List<StepInfo> getStepInfo(String appId, String encryptedData, String session_key, String iv){
         String decrypt = WXCore.decrypt(appId, encryptedData, session_key, iv);
@@ -33,7 +39,8 @@ public class SportsServiceImpl {
                 return 1;
             }
         });
-        System.out.println(list);
-        return list;
+
+        System.out.println(list.subList(0,9));
+        return list.subList(0,9);
     }
 }

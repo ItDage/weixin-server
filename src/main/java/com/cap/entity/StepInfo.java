@@ -16,6 +16,14 @@ public class StepInfo {
         this.timestamp = timestamp;
     }
 
+    public long getStep() {
+        return step;
+    }
+
+    public void setStep(long step) {
+        this.step = step;
+    }
+
     @Override
     public String toString() {
         return "StepInfo{" +
