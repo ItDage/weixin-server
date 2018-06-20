@@ -2,6 +2,7 @@ package com.cap.controller;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.cap.entity.Result;
 import com.google.gson.Gson;
@@ -26,6 +27,8 @@ public class LoginController {
     @Value("${weixin.auth.url}")
     private String url;
 
+    public static ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
+
     @ResponseBody
     @RequestMapping("/login")
     public Result testLogin(String code){
@@ -44,6 +47,7 @@ public class LoginController {
                 Map map = gson.fromJson(str, Map.class);
                 String openId = (String)map.get("openid");
                 String session_key = (String)map.get("session_key");
+                map.put(openId, session_key);
                 System.out.println("session_key" + session_key);
                 System.out.println(str);
                 System.out.println(openId);
