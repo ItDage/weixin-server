@@ -3,19 +3,15 @@ package com.cap.util;
 /**
  * Created by cmhy on 2018/6/19.
  */
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import org.apache.commons.codec.binary.Base64;
 
 import net.sf.json.JSONObject;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
 
 
 /**
  * 封装对外访问方法
+ * @author liuyazhuang
+ *
  */
 public class WXCore {
 
@@ -26,77 +22,32 @@ public class WXCore {
      * @return
      * @throws Exception
      */
-    public static String illegalAesKey = "-41001";//非法密钥
-    public static String illegalIv = "-41002";//非法初始向量
-    public static String illegalBuffer = "-41003";//非法密文
-    public static String decodeBase64Error = "-41004"; //解码错误
-    public static String noData = "-41005"; //数据不正确
-
-    private String appid;
-
-    private String sessionKey;
-
-    public WXCore(String appid, String sessionKey) {
-        this.appid = appid;
-        this.sessionKey = sessionKey;
-    }
-
-    /**
-     * 检验数据的真实性，并且获取解密后的明文.
-     * @param encryptedData  string 加密的用户数据
-     * @param iv  string 与用户数据一同返回的初始向量
-     * @return data string 解密后的原文
-     * @return String 返回用户信息
-     */
-    public String decryptData(String encryptedData, String iv) {
-        if (StringUtils.length(sessionKey) != 24) {
-            return illegalAesKey;
-        }
-        // 对称解密秘钥 aeskey = Base64_Decode(session_key), aeskey 是16字节。
-        byte[] aesKey = Base64.decodeBase64(sessionKey);
-
-        if (StringUtils.length(iv) != 24) {
-            return illegalIv;
-        }
-        // 对称解密算法初始向量 为Base64_Decode(iv)，其中iv由数据接口返回。
-        byte[] aesIV = Base64.decodeBase64(iv);
-
-        // 对称解密的目标密文为 Base64_Decode(encryptedData)
-        byte[] aesCipher = Base64.decodeBase64(encryptedData);
-
+    public static String decrypt(String appId, String encryptedData, String sessionKey, String iv){
+        String result = "";
         try {
-            byte[] resultByte = AES.decrypt(aesCipher, aesKey, aesIV);
-            if (null != resultByte && resultByte.length > 0) {
-                String userInfo = new String(resultByte, "UTF-8");
-                JSONObject jsons = JSONObject.fromObject(userInfo);
-                String id = jsons.getJSONObject("watermark").getString("appid");
-                if (!StringUtils.equals(id, appid)) {
-                    return illegalBuffer;
+            AES aes = new AES();
+            byte[] resultByte = aes.decrypt(Base64.decodeBase64(encryptedData), Base64.decodeBase64(sessionKey), Base64.decodeBase64(iv));
+            if(null != resultByte && resultByte.length > 0){
+                result = new String(WxPKCS7Encoder.decode(resultByte));
+                JSONObject jsonObject = JSONObject.fromObject(result);
+                String decryptAppid = jsonObject.getJSONObject(WATERMARK).getString(APPID);
+                if(!appId.equals(decryptAppid)){
+                    result = "";
                 }
-                return userInfo;
-            } else {
-                return noData;
             }
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
+            result = "";
             e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
 
-
-    public static void main(String[] args) throws Exception{
-        String appId = "wxe88fcf6c1f564e06";
-        String encryptedData = "gumAFJwo1uO4iGBW5S2auXQmrfI1hex3UXTJaIda0arRpRKHmuCkx4rccY6EyKJMVqwYBbxfMCioda6om3iOyp/NYhf7bEM3yt/WTCphZNKRcUe344dF4NZ5e4vVQn647NNk5EGlBPm/+myUSPYWhHqTEhPka2If0NlipmA1JQ73Ao3/sDqpLycchFg4Fb53YIgE3xkSzuIxUvw/ndzbsTCeSwHH/f2O3QN5I46E4cD03uoN3//W4e/qCsIX54DcMatM5rJ6aCXu0ycsdnUiV9N1Ltg6Hv3cv5RCBR6yQIIAaLcdnFUVoZAXDtx61Bqxg7H3bjfuD6BkxmGLI/6Z88ZEsd+F3M5+xMKnJZuS1xiImWW9gsb9Zu9gg3MREoR4QBF/VbbUPB/dwxhFipDVg8QPB5aaMxylz4J9HmUnlC5GIzlaDZIQQz4mdVwIY/H6vPzi1AK7JMZvoh28uBqwQJqnmSmP4VoYycUlEnD3uLK0Opa2p5yY5PPT9oYyQAa+tzNVi0I+pO/XfxQO4OXewTK6VzgrSmbINiL2CtD9wQipJwrIbhSKnMHPjuWdVND3JZk7Kg9i/gjDgz1ZwfK0JfZ4Ml+2cMvlY6+D1xZX/yvD17E+ZiBFJi7j7QFqjcrHf6E0AdFdiEItB4lmodulNdIooW/MveG4CEJSYeECg/pXUs+qqwylKNl+I8j8zTOhfjL2W/YSMIcSiX2Lpx+4Ov3W89J+u0zdbZybczSllWpnBrXtdDI1U5aG3myhxhR8i9b0BIiQXKNDYuJvssNwOqiAZAy7sFKcU51NKbPQw7UUaJWUZhKulNw2Rg065mqbr6rSeEXnZDm3RtU0Dx+29o5SuuvKY7vwa3PoYxgCFutvWw4LJStF3iPSr2An440fvNwOVHohOnO+PJcGXYCMc3bC0QVquBuzIf4XlW7vPAKW+DNt4IayRfMmoQKaNQRdgY4qh75xH2DjQVyPgiETz0uKr5NzDl3EDeomhbxjIhXyJ5QdKLFD2jEn/3Y2fmYg82DXfTICEdzITzrNV8KU5bXQhirF01UU7sCCa29JoqxokfRGOLSSpwiXeGdfEL8dZPRqtuP6oik4bIo+K3azG4b+cq3bBZGCWliUhHTCstuDrfB/H+mGwK1rQav6OSMLq4sZyFCjGGnHNtjLV8/RrTz1dUY6kw4VuZbgKg6VlQoVe3Y29epyWAphfDuzUSGE80OEacymUYqeXl0T1ncvfbZyJvJSfhszIjdvC7/B/SlU0P3+/xMrfvaLmiiGbWzGJ3X2yjLqV4q+eO/T12jFFG0ogimbY2voSmA5kRVwnZ0371I6rqPiWDjkvPRX6byObz81HCTUvLndR3KkshOTlfCYTHj4kelhLwU3P/EYpgdCVjRvNtxuGRwOrMbPVt2EF8TEBXlwsLSGGrfgBnOWU7zuGrZsMIzuPlkipANhaJTUNufWYnPicq+73I9W/K8rFcUxVWCMYZnjJ3VTs9b9/+X/fuTQ6MuIfB4i19uPx2BOd3QtcK2wFXTwiyg5NupL53glm+Km++YplmAyVsBsY53ud1JoAA+PsG9h0Xktf/eiE3AqSPfL5GNyBkYR1XnkeJapUdLTMxkiT8Cn+F/InFcixbGMM6r0/LwKnl0SXjxKZBQxI6cwiPC+c4BDC7bN";
-        String sessionKey = "Kg1QRHjT+LHpGQG74RE6aA==";
-        String iv = "RmHsdtr/FxKvnF/8addeHw==";
-        WXCore biz = new WXCore(appId, sessionKey);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String s = format.format(new Date(Long.parseLong(String.valueOf("1529251200000"))));
-        System.out.println(s);
-
-        System.out.println(biz.decryptData(encryptedData, iv));
-    }
+//    public static void main(String[] args) throws Exception{
+//        String appId = "wxe88fcf6c1f564e06";
+//        String encryptedData = "ipbTtaQnIMV2zjreSAaBbyjgw1QKMzE6nXlZT8UKqsYq8w/fUvjVwIj8bYA2OuWpkefukvTzRvu0j3Ptn9jhHOOMZ0VPC9PQpsL0S58R1EZyuksMBdJgDiZX7vQCf2Yf3NwkOVG3vXISZVb4Do9FbxlD+dbROy5aeCVgrBj6z9EcOvugQ+PNUR2tWjAezswP7VOPAEOvR22DUxHqKa+6QM71grEzU3Qk7uA53ZuNeZsaz3FrOEnVZqCjyzEbLAenhJ+WqfezhnhelDJsO3B2kHQtgRtqeG11goBFko5kYX+oKzSUCoxCRvMXDBP7jSmrImTZuiFayzE+w+4by3xXT2iV9ixcGRCFE9M6Rs9jWU8nsGtzvDEM1FofiwQsyGW3G51rbBtAeuphX1XUxT/RTO9Tuvqb3srshNhQZA75jAMzCelVCwLQ4e8dlQurAndrpyhh+v1Z1NovQkopXVHOkp3ndT1eHV1+pP2yk2uG7JkcpLz7rZ/f3Um1BxeF3QKvcGMltmZzCeiBTl6EgHTREQnr1wE305pW49GHWF5qOWBpj2XF1497xJHThu7IMmEh2yggH5CunpgWuvrdbPbOohV/MTw+Hi9ANrjYYPp8Oj3bFLW4/L/oy/qJiFO2cN8sCikJVCsjul71fTJ8djTFH0IvyT9TyR+GPqSnS4vEuKqlPI+ALbeW8RCVAC/nN/Jw7GStJKjDM6UIQ1/4mDUHLUUNnViXcMGhtZB99gDwJ7VoZcjB4Ml63m2D3IVNo4DfEj9xceKgrYtjCNNzYjsFBAlUWVkVGLKRtorxaWlvIoS++NkjonOAJzMyIyKbuZMRg/aYAJcXRIKntl8E3toOpr7qq9vhvkUfKwQTiejDMy6KeAxHEZi16GjU+jZbCbQJ812zWFcbyBfwpPbtxu6rL4+k04q4wP7+RFi70ZWwHCfvxxHb5OVndT7LW3GmxiYdDJqCs0A5pvxTxmi4TFKAvKjg7nm7A7t66wNrYCvH/xHpoJfFquH8+FX+5QqAFl+9pAkrp2OP7IW1pdLzZjhg4vYlqeeOJoYet/d5PZ2fFw3jAi4ckFsOGDTieB45vpAkLybDPZdfLdTgfRlL3gj0USm4iH0PK+roS1B9Io3S7lXTv3OkAsFPdbOFXfg/0BlpF1UqWHqWF2LNf2OfEg02g46VS93WbFxL+3MIagEHnFalNKCpRcGBQUQfWDz3ARx3q0bYcEbLQ+bnZjTcvQfB7Lh0qKlihgqugPXt2tJ9DJvTMLY7oTiyV4ePswa23F8CTpDTvnfnA4tulPL4SL7qWmDMQsvrvreNJ9jmLTtoaUxr4jdHFqw7L5ohIV330k6dAh1SO/GmbpKmjWc3+aBHJyhI5FZlGQkNFsio6uH//rBxNn11f6Sb6F9H4zz9GlHRGK8U0ZvlKfmZ0XPz5SxcplH+ctDJtWgqeumtXUiC3DTQxwm8GMQ/62ud2IC+TY9hC+5VIVhkBgpbdb4w0qHQrvLCdE0QBz4dK6bZ4IbUW49uG6ZH5+OBMm9Rq+N2UVG1YwiElPN5AZLxRMPSny4jOxiaygZ6/l7meWSfZXYu8JUJFop5KK2CCPg2WPqEbrpBk2EyF2387ruAIh44VVN5Xak/YSVN/uWV0zHOikrFifESf5BZ3rWrwVi8ha9Fyzsd";
+//        String sessionKey = "tiihtNczf5v6AKRyjwEUhQ==";
+//        String iv = "cJbXseN846GyEs+MHfFx/w==";
+//        System.out.println(decrypt(appId, encryptedData, sessionKey, iv));
+//    }
 }
