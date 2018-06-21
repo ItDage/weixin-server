@@ -1,9 +1,16 @@
 package com.cap.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.sound.midi.Soundbank;
+
+import com.cap.entity.Article;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,22 +27,24 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by cmhy on 2018/6/20.
+ * @Description https://www.sanwen.net/sanwen/  爬取散文网文章
  */
 @Component
 public class HttpResource {
 
     public static ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
-    public static ConcurrentHashMap<String, String> articleMap = new ConcurrentHashMap<String, String>();
 
-    public static String getNews(){
+    public static List<Article> getNews(String requestUrl){
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-        HttpGet httpGet = new HttpGet("https://www.sanwen.net/sanwen/love/");
+        HttpGet httpGet = new HttpGet(requestUrl);
+        List<Article> list = new ArrayList<Article>();
         try {
             CloseableHttpResponse response = httpClient.execute(httpGet);
             HttpEntity entity = response.getEntity();
             String result = EntityUtils.toString(entity, "UTF-8");
             Document document =Jsoup.parse(result);
             Elements elements = document.getElementsByClass("article-list");
+            //选出文章列表和文章具体地址
             for (Element element: elements) {
                 Elements elements2 = element.getElementsByTag("a");
                 for (Element link : elements2) {
@@ -44,21 +53,23 @@ public class HttpResource {
                     map.put(linkText, linkHref);
                 }
             }
-//            System.out.println("----------------------------");
-//            System.out.println(map);
-//            System.out.println("----------------------------");
+
             String url = null;
             String address = null;
+            String title = null;
             Set<Map.Entry<String, String>> entrySet = map.entrySet();
+
             for (Map.Entry<String, String> set : entrySet){
-                System.out.println(set.getKey());
-                System.out.println(set.getValue());
+                Article article = new Article();
+                //标题
+                title = set.getKey();
+                article.setTitle(title);
                 address = set.getValue();
                 if(!address.startsWith("/")){
                     address = "/" + address;
                 }
                 url = "https://www.sanwen.net" + address;
-                System.out.println("URL"  + url);
+//                System.out.println("URL"  + url);
                 HttpGet httpGet2 = new HttpGet(url);
                 CloseableHttpResponse response2 = httpClient.execute(httpGet2);
                 HttpEntity entity2 = response2.getEntity();
@@ -66,24 +77,41 @@ public class HttpResource {
                 Document document2 = Jsoup.parse(result2);
                 Elements elements2 = document2.getElementsByClass("mod").addClass("article");
                 if(elements2.size() > 0){
-//                    elements2.get(0).
-                    articleMap.put(set.getKey(), elements2.get(0).toString());
+                    //段落
+                    Elements elements4 = elements2.get(0).getElementsByTag("p");
+                    String content = null;
+                    for (Element element : elements4){
+//                        System.out.println(element.outerHtml());
+                        content += element.outerHtml();
+                    }
+                    article.setContent(content);
+
+                    //作者
+                    Elements elements3 = elements2.get(0).getElementsByTag("a");
+                    for (Element link : elements3){
+//                        System.out.println(link.text());
+                        article.setAuthor(link.text());
+                    }
                 }
+                list.add(article);
             }
-            System.out.println(articleMap);
+//            System.out.println(list);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        Iterator<Article> iterator = list.iterator();
+        while (iterator.hasNext()){
+            Article article = iterator.next();
+            if(article.getContent() == null || article.getTitle() == null){
+                iterator.remove();
+            }else {
+                article.setContent(article.getContent().substring(4));
+            }
+        }
+        return list;
     }
 
-    public static void main(String[] args) {
-        getNews();
-//        String str = "fafa";
-//        if(!str.startsWith("/")){
-//            str = "/" + str;
-//        }
-//        System.out.println(str);
-//        System.out.println(str.startsWith("/"));
-    }
+//    public static void main(String[] args) {
+//        getNews();
+//    }
 }

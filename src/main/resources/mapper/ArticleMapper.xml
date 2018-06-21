@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cap.dao.ArticleDao" >
+    <resultMap id="BaseResultMap" type="com.cap.entity.Article" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="author" property="author" jdbcType="VARCHAR" />
+        <result column="content" property="content" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="publishDate" property="publishDate" jdbcType="DATE"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+       id, title, author, content, icon, publishDate
+    </sql>
+
+    <!--<select id="getAll" resultType="com.cap.entity.Article"  >-->
+        <!--SELECT-->
+        <!--<include refid="Base_Column_List" />-->
+        <!--FROM article-->
+    <!--</select>-->
+
+    <select id="getArticleByPageNum" parameterType="java.lang.Integer" resultType="com.cap.entity.Article" >
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM article
+        limit #{pageNum}, 10
+    </select>
+
+    <!--批量插入-->
+    <insert id="insertList" parameterType="java.util.List">
+        INSERT ignore INTO
+        article
+        (title, author, content, icon, publishDate)
+        VALUES
+        <foreach collection="list" index="index" item="item" separator=",">
+            (#{item.title},#{item.author},#{item.content},#{item.icon}, now())
+        </foreach>
+    </insert>
+
+
+</mapper>
