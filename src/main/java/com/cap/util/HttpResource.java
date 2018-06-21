@@ -1,6 +1,8 @@
 package com.cap.util;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.http.HttpEntity;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class HttpResource {
 
     public static ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
+    public static ConcurrentHashMap<String, String> articleMap = new ConcurrentHashMap<String, String>();
 
     public static String getNews(){
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -41,21 +44,33 @@ public class HttpResource {
                     map.put(linkText, linkHref);
                 }
             }
-            System.out.println(map);
-            String url = "https://www.sanwen.net" + map.get("致深爱过的你的一封信");
-            System.out.println(url);
-            HttpGet httpGet2 = new HttpGet("https://www.sanwen.net/subject/3945911/");
-            CloseableHttpResponse response2 = httpClient.execute(httpGet2);
-            HttpEntity entity2 = response2.getEntity();
-            String result2 = EntityUtils.toString(entity2, "UTF-8");
-            Document document2 = Jsoup.parse(result2);
-            Elements elements2 = document2.getElementsByClass("mod").addClass("article");
-            for (Element element2: elements2) {
-                System.out.println(element2);
+//            System.out.println("----------------------------");
+//            System.out.println(map);
+//            System.out.println("----------------------------");
+            String url = null;
+            String address = null;
+            Set<Map.Entry<String, String>> entrySet = map.entrySet();
+            for (Map.Entry<String, String> set : entrySet){
+                System.out.println(set.getKey());
+                System.out.println(set.getValue());
+                address = set.getValue();
+                if(!address.startsWith("/")){
+                    address = "/" + address;
+                }
+                url = "https://www.sanwen.net" + address;
+                System.out.println("URL"  + url);
+                HttpGet httpGet2 = new HttpGet(url);
+                CloseableHttpResponse response2 = httpClient.execute(httpGet2);
+                HttpEntity entity2 = response2.getEntity();
+                String result2 = EntityUtils.toString(entity2, "UTF-8");
+                Document document2 = Jsoup.parse(result2);
+                Elements elements2 = document2.getElementsByClass("mod").addClass("article");
+                if(elements2.size() > 0){
+//                    elements2.get(0).
+                    articleMap.put(set.getKey(), elements2.get(0).toString());
+                }
             }
-//            Element content = document2.getElementById("content");
-//            System.out.println(content);
-//            System.out.println(result2);
+            System.out.println(articleMap);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -64,5 +79,11 @@ public class HttpResource {
 
     public static void main(String[] args) {
         getNews();
+//        String str = "fafa";
+//        if(!str.startsWith("/")){
+//            str = "/" + str;
+//        }
+//        System.out.println(str);
+//        System.out.println(str.startsWith("/"));
     }
 }
