@@ -14,7 +14,15 @@ public class Article {
     private String icon;//图标
     private Date publishDate;//发布时间
     private int pageNum;//页号
+    private String articleAbstract;//文章摘要
 
+    public String getArticleAbstract() {
+        return articleAbstract;
+    }
+
+    public void setArticleAbstract(String articleAbstract) {
+        this.articleAbstract = articleAbstract;
+    }
 
     public int getPageNum() {
         return pageNum;
