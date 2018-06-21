@@ -40,7 +40,7 @@ public class ArticleController {
         Result result = new Result();
         List<Article> list = articleService.getArticleByPageNum(pageNum * 10);
         //查所有
-        List<Article> list2 = articleService.getArticleByPageNum(-1);
+        List<Article> list2 = articleService.getArticleByPageNum(null);
         result.setData(list);
         result.setCode(list2.size());
         return result;

@@ -14,5 +14,5 @@ public interface ArticleDao {
 
     int insertList(List<Article> list);
 
-    List<Article> getArticleByPageNum(int pageNum);
+    List<Article> getArticleByPageNum(Integer pageNum);
 }

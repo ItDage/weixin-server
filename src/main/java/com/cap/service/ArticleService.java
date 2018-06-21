@@ -14,6 +14,6 @@ public interface ArticleService {
 
     int insertList(String requestUrl);
 
-    List<Article> getArticleByPageNum(int pageNum);
+    List<Article> getArticleByPageNum(Integer pageNum);
 
 }

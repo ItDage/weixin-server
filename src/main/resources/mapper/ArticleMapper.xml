@@ -24,7 +24,7 @@
         SELECT
         <include refid="Base_Column_List" />
         FROM article
-        <if test="#{pageNum} != -1">
+        <if test="_parameter != null">
           limit #{pageNum}, 10
         </if>
     </select>
