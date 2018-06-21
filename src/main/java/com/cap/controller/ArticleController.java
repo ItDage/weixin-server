@@ -38,11 +38,11 @@ public class ArticleController {
     @RequestMapping("/get")
     public Result get(int pageNum){
         Result result = new Result();
-//        articleService.insertList();
-        List<Article> list = articleService.getArticleByPageNum(pageNum);
-        System.out.println(list.size());
-        System.out.println(list);
+        List<Article> list = articleService.getArticleByPageNum(pageNum * 10);
+        //查所有
+        List<Article> list2 = articleService.getArticleByPageNum(-1);
         result.setData(list);
+        result.setCode(list2.size());
         return result;
     }
 }

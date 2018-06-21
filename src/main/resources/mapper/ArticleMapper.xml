@@ -24,7 +24,9 @@
         SELECT
         <include refid="Base_Column_List" />
         FROM article
-        limit #{pageNum}, 10
+        <if test="#{pageNum} != -1">
+          limit #{pageNum}, 10
+        </if>
     </select>
 
     <!--批量插入-->
