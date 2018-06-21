@@ -106,7 +106,7 @@ public class HttpResource {
                 iterator.remove();
             }else {
                 article.setContent(article.getContent().substring(4));
-                article.setArticleAbstract(article.getContent().replace("<p>", "").replace("</p>", "。").substring(0,280));
+                article.setArticleAbstract(article.getContent().replace("<p>", "").replace("</p>", "。").substring(0,article.getContent().length()/4));
             }
         }
         return list;
