@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updateUserInfo(User user) {
+        System.out.println("此时的session_key" + user.getSession_key());
         User userInfo = getUserInfo(user.getOpenId());
         return  userInfo == null ? insert(user) : userDao.updateUserInfo(user);
     }

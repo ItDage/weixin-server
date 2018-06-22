@@ -50,9 +50,13 @@ public class ArticleController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public Result add(@RequestBody Article article){
         Result result = new Result();
-        System.out.println(article);
-        article.setArticleAbstract(article.getContent().substring(0, article.getContent().length() / 3));
-        articleService.add(article);
+        article.setArticleAbstract(article.getContent().replace("<p>", "").replace("</p>", "。").substring(0,article.getContent().length()/4));
+        int flag = articleService.add(article);
+        if(flag > 0){
+            result.setCode(200);
+        }else {
+            result.setCode(404);
+        }
         return result;
     }
 }
