@@ -36,7 +36,7 @@
         (title, author, content, icon, publishDate, articleAbstract, type, openId)
         VALUES
         <foreach collection="list" index="index" item="item" separator=",">
-            (#{item.title},#{item.author},#{item.content},#{item.icon}, now(), #{item.articleAbstract}, #{item.type}, "oAyc340Lpq7VXmwsHUa96U-QBa2c")
+            (#{item.title},#{item.author},#{item.content},#{item.icon}, now(), #{item.articleAbstract}, #{item.type}, 'oAyc340Lpq7VXmwsHUa96U-QBa2c')
         </foreach>
     </insert>
 

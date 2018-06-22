@@ -28,9 +28,9 @@
     <insert id="insert" parameterType="com.cap.entity.User" >
         INSERT INTO
         user
-        (openId,nickName,gender,phoneNumber)
+        (openId,nickName,gender,phoneNumber,session_key)
         VALUES
-        (#{openId},#{nickName}, #{gender}, #{phoneNumber})
+        (#{openId},#{nickName}, #{gender}, #{phoneNumber}, #{session_key})
     </insert>
 
     <update id="updateUserInfo" parameterType="com.cap.entity.User">
