@@ -34,7 +34,13 @@ public class HttpResource {
 
     public static ConcurrentHashMap<String, String> map = new ConcurrentHashMap<String, String>();
 
-    public static List<Article> getNews(String requestUrl){
+    /***
+     * 爬取文章
+     * @param requestUrl 请求的url
+     * @param type 文章类型
+     * @return
+     */
+    public static List<Article> getNews(String requestUrl, int type){
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         HttpGet httpGet = new HttpGet(requestUrl);
         List<Article> list = new ArrayList<Article>();
@@ -105,6 +111,7 @@ public class HttpResource {
             if(article.getContent() == null || article.getTitle() == null){
                 iterator.remove();
             }else {
+                article.setType(type);
                 article.setContent(article.getContent().substring(4));
                 article.setArticleAbstract(article.getContent().replace("<p>", "").replace("</p>", "。").substring(0,article.getContent().length()/4));
             }

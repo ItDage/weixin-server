@@ -15,6 +15,16 @@ public class Article {
     private Date publishDate;//发布时间
     private int pageNum;//页号
     private String articleAbstract;//文章摘要
+    private int type;//文章所属类型
+
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getArticleAbstract() {
         return articleAbstract;

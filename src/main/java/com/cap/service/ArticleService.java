@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ArticleService {
 
-    int insertList(String requestUrl);
+    int insertList(String requestUrl, int type);
 
     List<Article> getArticleByPageNum(Integer pageNum);
 

@@ -28,9 +28,9 @@ public class ArticleController {
 
     @ResponseBody
     @RequestMapping(value = "/post", method = RequestMethod.POST)
-    public Result insertList(String requestUrl){
+    public Result insertList(String requestUrl, int type){
         Result result = new Result();
-        articleService.insertList(requestUrl);
+        articleService.insertList(requestUrl, type);
         return result;
     }
 

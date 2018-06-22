@@ -11,7 +11,7 @@
     </resultMap>
 
     <sql id="Base_Column_List" >
-       id, title, author, content, icon, publishDate, articleAbstract
+       id, title, author, content, icon, publishDate, articleAbstract, type
     </sql>
 
     <!--<select id="getAll" resultType="com.cap.entity.Article"  >-->
@@ -33,10 +33,10 @@
     <insert id="insertList" parameterType="java.util.List">
         INSERT ignore INTO
         article
-        (title, author, content, icon, publishDate, articleAbstract)
+        (title, author, content, icon, publishDate, articleAbstract, type)
         VALUES
         <foreach collection="list" index="index" item="item" separator=",">
-            (#{item.title},#{item.author},#{item.content},#{item.icon}, now(), #{item.articleAbstract})
+            (#{item.title},#{item.author},#{item.content},#{item.icon}, now(), #{item.articleAbstract}, #{item.type})
         </foreach>
     </insert>
 
