@@ -45,4 +45,14 @@ public class ArticleController {
         result.setCode(list2.size());
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public Result add(@RequestBody Article article){
+        Result result = new Result();
+        System.out.println(article);
+        article.setArticleAbstract(article.getContent().substring(0, article.getContent().length() / 3));
+        articleService.add(article);
+        return result;
+    }
 }

@@ -28,4 +28,9 @@ public class ArticleServiceImpl  implements ArticleService{
     public List<Article> getArticleByPageNum(Integer pageNum) {
         return articleDao.getArticleByPageNum(pageNum);
     }
+
+    @Override
+    public int add(Article article) {
+        return articleDao.add(article);
+    }
 }

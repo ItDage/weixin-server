@@ -16,7 +16,16 @@ public class Article {
     private int pageNum;//页号
     private String articleAbstract;//文章摘要
     private int type;//文章所属类型
+    private String openId;//发布人的openId
 
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
 
     public int getType() {
         return type;

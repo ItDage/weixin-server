@@ -16,4 +16,5 @@ public interface ArticleService {
 
     List<Article> getArticleByPageNum(Integer pageNum);
 
+    int add(Article article);
 }
