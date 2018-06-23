@@ -24,8 +24,9 @@
         SELECT
         <include refid="Base_Column_List" />
         FROM article
+        order by publishDate DESC
         <if test="_parameter != null">
-          limit #{pageNum}, 10
+            limit #{pageNum}, 10
         </if>
     </select>
 
