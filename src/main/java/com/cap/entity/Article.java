@@ -2,6 +2,8 @@ package com.cap.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * Created by cmhy on 2018/6/21.
  */
@@ -12,6 +14,7 @@ public class Article {
     private String author;//作者
     private String content;//内容
     private String icon;//图标
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date publishDate;//发布时间
     private int pageNum;//页号
     private String articleAbstract;//文章摘要

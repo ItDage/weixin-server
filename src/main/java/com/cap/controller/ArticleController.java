@@ -1,5 +1,8 @@
 package com.cap.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import com.cap.entity.Article;
@@ -39,6 +42,17 @@ public class ArticleController {
     public Result get(int pageNum){
         Result result = new Result();
         List<Article> list = articleService.getArticleByPageNum(pageNum * 10);
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        list.forEach(article -> {
+            String s = sf.format(article.getPublishDate());
+            Date date = null;
+            try {
+                date = sf.parse(s);
+                article.setPublishDate(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        });
         //查所有
         List<Article> list2 = articleService.getArticleByPageNum(null);
         result.setData(list);
