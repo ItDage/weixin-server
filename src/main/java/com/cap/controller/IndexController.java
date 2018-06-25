@@ -12,6 +12,9 @@ public class IndexController {
 
     @RequestMapping("/testIndex")
     public String testIndex(RedirectAttributes redirectAttributes){
-        return "index";
+        System.out.println("找到");
+        redirectAttributes.addAttribute("type","url");
+        redirectAttributes.addAttribute("from","测试啊");
+        return "redirect:index.html";
     }
 }
