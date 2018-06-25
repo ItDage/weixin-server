@@ -32,6 +32,7 @@ public class ArticleController {
     @ResponseBody
     @RequestMapping(value = "/post", method = RequestMethod.POST)
     public Result insertList(String requestUrl, int type){
+        System.out.println("爬取地址" + requestUrl);
         Result result = new Result();
         articleService.insertList(requestUrl, type);
         return result;

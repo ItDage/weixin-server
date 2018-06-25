@@ -21,6 +21,7 @@ public class ArticleServiceImpl  implements ArticleService{
     @Override
     public int insertList(String url, int type) {
         List<Article> list = HttpResource.getNews(url, type);
+        System.out.println(list);
         return articleDao.insertList(list);
     }
 
