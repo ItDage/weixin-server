@@ -22,9 +22,10 @@
 </body>
 <script>
 
+
     var test2 = document.getElementById("cnzz_stat_icon_1274023267");
     test2.style.visibility='hidden'
-
+//    GetRequest();
     function download() {
         var params = GetRequest();
         var downloadUrl = null;
@@ -41,6 +42,8 @@
     //获取url参数
     function GetRequest() {
         var url = location.search; //获取url中"?"符后的字串
+        alert(url);
+        console.log(url)
         var theRequest = new Object();
         if (url.indexOf("?") != -1) {
             var str = url.substr(1);
