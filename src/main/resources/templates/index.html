@@ -16,21 +16,40 @@
 </head>
 <body>
     <p>fafaf</p>
-    <button onclick="download()" id="downloadId" class="download">下载</button>
-    <button onclick="download()" id="downloadId2" class="download">下载2</button>
-    <p id="test">fasfas</p>
+    <button onclick="download()" id="downloadId" class="downloadStatistic">下载</button>
+    <button onclick="download()" id="downloadId2" class="downloadStatistic">下载2</button>
 
 </body>
 <script>
 
-    var test = document.getElementById("test");
-    test.style.visibility='hidden'
     var test2 = document.getElementById("cnzz_stat_icon_1274023267");
     test2.style.visibility='hidden'
 
-//    test.css({"display" : "none"})
     function download() {
-        _czc.push(['_trackEvent', '按钮', '下载', '下载量', '', 'download']);
+        var params = GetRequest();
+        var downloadUrl = null;
+        if(params['type'] == "url"){
+            //直接通过url下载
+            downloadUrl = 'url下载';
+        }else {
+            downloadUrl = '二维码下载';
+        }
+        //事件发生在谁身上,访客跟元素交互的行为动作,更详细的描述事件,(分型事件的分值，加载时间型事件的时长，订单型事件的价格),填写事件元素的div元素id
+        _czc.push(['_trackEvent', '下载按钮', downloadUrl,  params['from'], '', 'downloadStatistic']);
+    }
+
+    //获取url参数
+    function GetRequest() {
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+                theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]);
+            }
+        }
+        return theRequest;
     }
 </script>
 </html>
