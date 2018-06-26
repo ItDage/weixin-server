@@ -15,6 +15,6 @@ public class IndexController {
         System.out.println("找到");
         redirectAttributes.addAttribute("type","url");
         redirectAttributes.addAttribute("from","测试啊");
-        return "redirect:index.html";
+        return "index";
     }
 }
